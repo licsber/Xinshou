@@ -15,7 +15,12 @@ class Admin:
         )
 
     def get_access_token(self) -> str:
-        pass
+        return self._get_type('access_token')['token']
+
+    def _get_type(self, type):
+        return self.admin.find_one({
+            'type': {'$eq': type}
+        })
 
 
 def refresh_access_token(url, passwd, app_id, secret):
@@ -34,7 +39,7 @@ def refresh_access_token(url, passwd, app_id, secret):
     param = {
         'grant_type': 'client_credential',
         'appid': app_id,
-        'secret': secert
+        'secret': secret
     }
     res = requests.get(url, params=param)
 
