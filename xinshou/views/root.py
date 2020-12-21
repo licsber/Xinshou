@@ -1,14 +1,14 @@
 import hashlib
 
-from flask import Flask
+from flask import Blueprint
+from flask import current_app
 from flask import request
+from flask import send_from_directory
 
-from config import *
-
-app = Flask(__name__)
+mod = Blueprint('root', __name__)
 
 
-@app.route('/')
+@mod.route('/')
 def root():
     if len(request.args) == 0:
         return 'Hello from Licsber.'
@@ -19,12 +19,13 @@ def root():
     signature = request.args['signature']
     timestamp = request.args['timestamp']
 
-    h = [WX_TOKEN, timestamp, nonce]
+    h = [current_app.config['WX_TOKEN'], timestamp, nonce]
     h.sort()
     h = ''.join(h)
     h = hashlib.sha1(h).hexdigest()
     return echo_str if h == signature else 'Fail.'
 
 
-if __name__ == '__main__':
-    app.run(port=30443)
+@mod.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static', filename='favicon.ico')
