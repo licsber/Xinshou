@@ -13,9 +13,13 @@ class Admin:
             app_id=current_app.config['WX_APP_ID'],
             secret=current_app.config['WX_APP_SECRET']
         )
+        self.token = self._get_type('access_token')
 
     def get_access_token(self) -> str:
-        return self._get_type('access_token')['token']
+        res = self.token
+        if self.token['expire'] < get_timestamp() + 1800:
+            res = self.token = self._get_type('access_token')
+        return res['token']
 
     def _get_type(self, type):
         return self.admin.find_one({
@@ -46,6 +50,9 @@ def refresh_access_token(url, passwd, app_id, secret):
     if res.status_code == 200:
         res = res.content
         res = json.loads(res)
+        if 'errcode' in res:
+            print(f"token更新失败, {res['errmsg']}")
+            return
         access_token = {
             'type': 'access_token',
             'token': res['access_token'],

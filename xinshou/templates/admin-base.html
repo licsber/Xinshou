@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Licsber Admin{% endblock title %}</title>
+    <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui/css/layui.css"/>
+    <script src="https://cdn.bootcdn.net/ajax/libs/layui/2.5.7/layui.all.min.js"></script>
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">Licsber Wechat</div>
+
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="/wechat-admin?ak=licsber">控制台</a></li>
+            <li class="layui-nav-item"><a href="settings">高级设置</a></li>
+        </ul>
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item"><a href="">退出</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="">今日校园</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="">当前状态</a></dd>
+                        <dd><a href="">用户管理</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <div class="layui-container">
+            {% if msg %}
+                <blockquote class="layui-elem-quote">{{ msg | safe }}</blockquote>
+                <hr class="layui-bg-green">
+            {% endif %}
+            {% block body %}
+            {% endblock body %}
+        </div>
+    </div>
+
+    <div class="layui-footer">
+        © licsber.site 中控台
+    </div>
+</div>
+<script>
+    {% if info %}
+        const info = {{ info | tojson }}
+            layer.open({
+                'title': '信息提示',
+                'content': info
+            })
+    {% endif %}
+    {% block script %}
+    {% endblock script %}
+</script>
+</body>
+
+</html>
