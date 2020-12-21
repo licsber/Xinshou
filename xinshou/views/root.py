@@ -21,7 +21,7 @@ def root():
 
     h = [current_app.config['WX_TOKEN'], timestamp, nonce]
     h.sort()
-    h = ''.join(h)
+    h = ''.join(h).encode()
     h = hashlib.sha1(h).hexdigest()
     return echo_str if h == signature else 'Fail.'
 
