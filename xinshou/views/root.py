@@ -1,4 +1,3 @@
-import base64
 import hashlib
 
 from flask import Blueprint
@@ -7,6 +6,7 @@ from flask import request
 from flask import send_from_directory
 
 import wx
+from model import receive_msg
 
 mod = Blueprint('root', __name__)
 
@@ -14,15 +14,7 @@ mod = Blueprint('root', __name__)
 @mod.route('/', methods=['POST'])
 def post():
     req = wx.receive.parse_xml(request.data)
-    res = wx.reply.Msg()
-
-    if isinstance(req, wx.receive.TextMsg):
-        to_user = req.from_user_name
-        from_user = req.to_user_name
-        content = f'Base64回音壁测试, 你刚说了: "{base64.b64encode(req.content).decode()}".'
-        res = wx.reply.TextMsg(to_user, from_user, content)
-
-    return res.send()
+    return receive_msg(req)
 
 
 @mod.route('/', methods=['GET'])

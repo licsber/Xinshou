@@ -38,7 +38,7 @@ class Msg(object):
 class TextMsg(Msg):
     def __init__(self, xml_data):
         Msg.__init__(self, xml_data)
-        self.content = xml_data.find('Content').text.encode("utf-8")
+        self.content = xml_data.find('Content').text
 
     def to_dict(self):
         d = super(TextMsg, self).to_dict()
