@@ -21,7 +21,8 @@ def submit():
     stu_no = request.form['stu_no']
     passwd = request.form['passwd']
     open_id = request.form['token']
-    if current_app.cpdaily.add_user(stu_no, passwd, open_id):
-        return '<h1>提交成功.</h1>'
+    exist = current_app.cpdaily.check_user(open_id)
+    if not exist and current_app.cpdaily.add_user(stu_no, passwd, open_id):
+        return '<h1>提交成功, 请直接按左上角关闭.</h1>'
     else:
         return '<h1>密码错误或该微信已绑定账号，如需更改请联系管理员.</h1>'

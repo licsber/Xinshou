@@ -9,9 +9,13 @@
 </head>
 <body>
 <form class="layui-form" action="{{ url_for('cpdaily.submit') }}" method="post"
-      style="alignment: center;margin: 10%;font-size: 24px">
+      style="alignment: center;margin: 10%;font-size: 20px">
+    <h1>显示提交成功后证明成功，<br>直接点击左上角X关闭。</h1>
+    <br>
+    <h2>密码就是教务网密码，<br>用于换取学校统一认证token。</h2>
+    <br><br>
     <div class="layui-form-item">
-        <label class="layui-form-label">校园学号</label>
+        <label class="layui-form-label">填写校园学号</label>
         <div class="layui-input-block">
             <label>
                 <input type="text" name="stu_no" placeholder="每个微信只能登记一个账号" autocomplete="off" required
@@ -20,7 +24,7 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">教务密码</label>
+        <label class="layui-form-label">教务网密码</label>
         <div class="layui-input-block">
             <label>
                 <input type="text" name="passwd" placeholder="每个微信只能登记一个账号" autocomplete="off" required
@@ -31,6 +35,7 @@
     <label>
         <input hidden type="text" name="token" value="{{ token }}">
     </label>
+    <br><br>
     <div class="layui-form-item">
         <div class="layui-input-block">
             <button class="layui-btn" lay-submit>立即提交</button>
