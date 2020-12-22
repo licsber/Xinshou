@@ -1,5 +1,5 @@
 import wx
-
+from .cpdaily_processor import CpDailyProcessor
 from .default_processor import DefaultProcessor
 from .magic_processor import MagicProcessor
 from .status_processor import StatusProcessor
@@ -10,7 +10,8 @@ msg_map = {
 }
 
 event_map = {
-    'status': StatusProcessor()
+    'status': StatusProcessor(),
+    'cpdaily': CpDailyProcessor()
 }
 
 

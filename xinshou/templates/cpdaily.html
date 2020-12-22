@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>今日校园登陆</title>
+    <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui/css/layui.css"/>
+    <script src="https://cdn.bootcdn.net/ajax/libs/layui/2.5.7/layui.all.min.js"></script>
+</head>
+<body>
+<form class="layui-form" action="{{ url_for('cpdaily.submit') }}" method="post"
+      style="alignment: center;margin: 10%;font-size: 24px">
+    <div class="layui-form-item">
+        <label class="layui-form-label">校园学号</label>
+        <div class="layui-input-block">
+            <label>
+                <input type="text" name="stu_no" placeholder="每个微信只能登记一个账号" autocomplete="off" required
+                       class="layui-input">
+            </label>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">教务密码</label>
+        <div class="layui-input-block">
+            <label>
+                <input type="text" name="passwd" placeholder="每个微信只能登记一个账号" autocomplete="off" required
+                       class="layui-input">
+            </label>
+        </div>
+    </div>
+    <label>
+        <input hidden type="text" name="token" value="{{ token }}">
+    </label>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit>立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>
