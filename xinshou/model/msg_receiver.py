@@ -1,17 +1,24 @@
 import wx
 
-from .b64processor import B64Processor
+from .default_processor import DefaultProcessor
 from .magic_processor import MagicProcessor
+from .status_processor import StatusProcessor
 
-text_map = {
+msg_map = {
     '我爱你': MagicProcessor(),
-    'default': B64Processor()
+    'default': DefaultProcessor()
+}
+
+event_map = {
+    'status': StatusProcessor()
 }
 
 
 def receive_msg(m: wx.receive.Msg) -> wx.reply.Msg:
-    if isinstance(m, wx.receive.TextMsg) and m.content in text_map:
-        processor = text_map[m.content]
+    if isinstance(m, wx.receive.TextMsg) and m.content in msg_map:
+        processor = msg_map[m.content]
+    elif isinstance(m, wx.receive.Event) and m.event_key in event_map:
+        processor = event_map[m.event_key]
     else:
-        processor = text_map['default']
+        processor = msg_map['default']
     return processor.process(m)

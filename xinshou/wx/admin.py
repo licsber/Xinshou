@@ -17,7 +17,7 @@ class Admin:
 
     def get_access_token(self) -> str:
         res = self.token
-        if self.token['expire'] < get_timestamp() + 1800:
+        if self.token['expire'] < get_timestamp() + 3630:
             res = self.token = self._get_type('access_token')
         return res['token']
 

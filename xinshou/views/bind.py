@@ -1,8 +1,12 @@
 from flask import Blueprint
+from flask import render_template
+from flask import request
 
 mod = Blueprint('bind', __name__)
 
 
 @mod.route('/')
 def bind():
-    pass
+    print(request.args)
+    print(request.form)
+    return render_template('bind.html')

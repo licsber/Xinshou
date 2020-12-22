@@ -1,33 +1,19 @@
 from xml.etree import ElementTree
 
 
-def parse_xml(web_data):
-    if len(web_data) == 0:
-        return None
-    xml_data = ElementTree.fromstring(web_data)
-    msg_type = xml_data.find('MsgType').text
-    if msg_type == 'text':
-        return TextMsg(xml_data)
-    elif msg_type == 'image':
-        return ImageMsg(xml_data)
-    return Msg(xml_data)
-
-
 class Msg(object):
     def __init__(self, xml_data):
         self.to_user_name = xml_data.find('ToUserName').text
         self.from_user_name = xml_data.find('FromUserName').text
         self.create_time = xml_data.find('CreateTime').text
         self.msg_type = xml_data.find('MsgType').text
-        self.msg_id = xml_data.find('MsgId').text
 
     def to_dict(self):
         return {
             'to': self.to_user_name,
             'from': self.from_user_name,
             'ctime': self.create_time,
-            'type': self.msg_type,
-            'id': self.msg_id
+            'type': self.msg_type
         }
 
     def __str__(self):
@@ -38,10 +24,12 @@ class TextMsg(Msg):
     def __init__(self, xml_data):
         Msg.__init__(self, xml_data)
         self.content = xml_data.find('Content').text
+        self.msg_id = xml_data.find('MsgId').text
 
     def to_dict(self):
         d = super(TextMsg, self).to_dict()
         d['content'] = self.content
+        d['id'] = self.msg_id
         return d
 
     def to_db(self, db):
@@ -53,11 +41,13 @@ class ImageMsg(Msg):
         Msg.__init__(self, xml_data)
         self.pic_url = xml_data.find('PicUrl').text
         self.media_id = xml_data.find('MediaId').text
+        self.msg_id = xml_data.find('MsgId').text
 
     def to_dict(self):
         d = super(ImageMsg, self).to_dict()
         d['pic_url'] = self.pic_url
         d['media_id'] = self.media_id
+        d['id'] = self.msg_id
         return d
 
 
@@ -66,9 +56,77 @@ class VoiceMsg(Msg):
         Msg.__init__(self, xml_data)
         self.media_id = xml_data.find('MediaId').text
         self.format = xml_data.find('Format').text
+        self.recognition = xml_data.find('Recognition').text
+        self.msg_id = xml_data.find('MsgId').text
 
     def to_dict(self):
         d = super(VoiceMsg, self).to_dict()
         d['format'] = self.format
         d['media_id'] = self.media_id
+        d['recognition'] = self.recognition
+        d['id'] = self.msg_id
         return d
+
+
+class Event(Msg):
+    def __init__(self, xml_data):
+        super(Event, self).__init__(xml_data)
+        self.event_key = xml_data.find('EventKey').text
+        self.event = xml_data.find('Event').text
+
+    def to_dict(self):
+        d = super(Event, self).to_dict()
+        d['key'] = self.event_key
+        d['event'] = self.event
+        return d
+
+
+class ClickEvent(Event):
+    def __init__(self, xml_data):
+        super(ClickEvent, self).__init__(xml_data)
+
+
+class ScanWaitEvent(Event):
+    def __init__(self, xml_data):
+        super(ScanWaitEvent, self).__init__(xml_data)
+        self.scan_type = xml_data.find('ScanCodeInfo').find('ScanType').text
+        self.scan_result = xml_data.find('ScanCodeInfo').find('ScanResult').text
+
+    def to_dict(self):
+        d = super().to_dict()
+        d['scan_type'] = self.scan_type
+        d['scan_result'] = self.scan_result
+        return d
+
+
+event_map = {
+    'CLICK': ClickEvent,
+    'scancode_waitmsg': ScanWaitEvent
+}
+
+
+def parse_event(xml_data):
+    event = xml_data.find('Event').text
+    res = Event
+    if event in event_map:
+        res = event_map[event]
+    return res(xml_data)
+
+
+xml_map = {
+    'text': TextMsg,
+    'image': ImageMsg,
+    'voice': VoiceMsg,
+    'event': parse_event
+}
+
+
+def parse_xml(web_data):
+    if len(web_data) == 0:
+        return None
+    xml_data = ElementTree.fromstring(web_data)
+    msg_type = xml_data.find('MsgType').text
+    res = Msg
+    if msg_type in xml_map:
+        res = xml_map[msg_type]
+    return res(xml_data)

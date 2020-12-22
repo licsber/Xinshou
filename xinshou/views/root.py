@@ -13,6 +13,8 @@ mod = Blueprint('root', __name__)
 
 @mod.route('/', methods=['POST'])
 def post():
+    if current_app.debug:
+        print(request.data)
     req = wx.receive.parse_xml(request.data)
     current_app.msg_logger.log(req)
     return receive_msg(req)

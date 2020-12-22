@@ -5,9 +5,6 @@
         <a href="{{ url_for('admin.get_all_menu') }}" class="layui-btn layui-btn-radius">
             查看自定义菜单
         </a>
-        <a href="{{ url_for('admin.delete_all_menu') }}" class="layui-btn layui-btn-radius layui-btn-danger">
-            取消自定义菜单
-        </a>
         <form class="layui-form layui-form-pane" action="{{ url_for('admin.set_all_menu') }}" method="post">
             <br>
             <div class="layui-form-item" pane>
@@ -20,6 +17,9 @@
                 </div>
             </div>
             <button class="layui-btn layui-btn-radius layui-btn-normal" lay-submit>重设自定义菜单</button>
+            <a href="{{ url_for('admin.delete_all_menu') }}" class="layui-btn layui-btn-radius layui-btn-danger">
+                取消自定义菜单
+            </a>
         </form>
         <hr class="layui-bg-greens">
 
