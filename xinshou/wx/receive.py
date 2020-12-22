@@ -10,8 +10,7 @@ def parse_xml(web_data):
         return TextMsg(xml_data)
     elif msg_type == 'image':
         return ImageMsg(xml_data)
-    else:
-        return None
+    return Msg(xml_data)
 
 
 class Msg(object):
@@ -42,7 +41,7 @@ class TextMsg(Msg):
 
     def to_dict(self):
         d = super(TextMsg, self).to_dict()
-        d['content'] = self.content.decode()
+        d['content'] = self.content
         return d
 
     def to_db(self, db):
@@ -58,5 +57,18 @@ class ImageMsg(Msg):
     def to_dict(self):
         d = super(ImageMsg, self).to_dict()
         d['pic_url'] = self.pic_url
+        d['media_id'] = self.media_id
+        return d
+
+
+class VoiceMsg(Msg):
+    def __init__(self, xml_data):
+        Msg.__init__(self, xml_data)
+        self.media_id = xml_data.find('MediaId').text
+        self.format = xml_data.find('Format').text
+
+    def to_dict(self):
+        d = super(VoiceMsg, self).to_dict()
+        d['format'] = self.format
         d['media_id'] = self.media_id
         return d

@@ -32,7 +32,18 @@ def index():
 @auth.login_required
 def settings():
     msg = request.args['msg'] if 'msg' in request.args else ''
-    return render_template('admin-settings.html', msg=msg)
+    return render_template('admin-settings.html', msg=msg,
+                           input_json=current_app.config['DEFAULT_MENU'])
+
+
+@mod.route('/user-info', methods=['POST'])
+def get_user_info():
+    params = {
+        'access_token': current_app.admin.get_access_token(),
+        'openid': request.form['input']
+    }
+    res = requests.get(current_app.config['API_USER_INFO'], params=params)
+    return redirect(url_for('admin.settings', msg=res.content))
 
 
 @mod.route('/delete-all-menu')

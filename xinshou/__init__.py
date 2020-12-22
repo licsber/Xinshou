@@ -1,9 +1,8 @@
 from flask import Flask
 from flask_apscheduler import APScheduler
 
-from views import admin
-from views import cpdaliy
-from views import root
+from db.msg_log import MsgLogger
+from views import *
 from wx.admin import Admin
 
 
@@ -13,6 +12,7 @@ def create_app():
     app.register_blueprint(root.mod, url_prefix='/')
     app.register_blueprint(cpdaliy.mod, url_prefix='/cpdaliy')
     app.register_blueprint(admin.mod, url_prefix='/wechat-admin')
+    app.register_blueprint(bind.mod, url_prefix='/bing')
 
     scheduler = APScheduler()
     scheduler.init_app(app)
@@ -20,5 +20,6 @@ def create_app():
 
     with app.app_context():
         app.admin = Admin()
+        app.msg_logger = MsgLogger()
 
     return app
