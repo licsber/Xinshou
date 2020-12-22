@@ -6,7 +6,7 @@ from flask import request
 from flask import send_from_directory
 
 import wx
-from model import receive_msg
+from xinshou.model import receive_msg
 
 mod = Blueprint('root', __name__)
 

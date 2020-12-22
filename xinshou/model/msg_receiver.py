@@ -1,4 +1,4 @@
-import wx
+from xinshou import wx
 from .cpdaily_processor import CpDailyProcessor
 from .default_processor import DefaultProcessor
 from .magic_processor import MagicProcessor

@@ -1,4 +1,4 @@
-import wx
+from xinshou import wx
 
 
 class Processor:

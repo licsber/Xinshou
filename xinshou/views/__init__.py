@@ -1,4 +1,4 @@
-import views.admin
-import views.bind
-import views.cpdaily
-import views.root
+from . import admin
+from . import bind
+from . import cpdaily
+from . import root

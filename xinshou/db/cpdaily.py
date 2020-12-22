@@ -3,8 +3,8 @@ from flask import current_app
 from licsber import get_mongo
 from licsber.utils import get_now_date
 
-from cpdaliy import check_in
-from cpdaliy import get_session
+from xinshou.cpdaliy import check_in
+from xinshou.cpdaliy import get_session
 
 
 class CpDaily:

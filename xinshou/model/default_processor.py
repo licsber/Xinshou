@@ -1,6 +1,6 @@
 import base64
 
-import wx
+from xinshou import wx
 from .processor import Processor
 
 

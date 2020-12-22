@@ -1,3 +1,3 @@
-import wx.admin
-import wx.receive
-import wx.reply
+from . import admin
+from . import receive
+from . import reply

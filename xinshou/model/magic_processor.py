@@ -1,6 +1,6 @@
 from flask import current_app
 
-import wx
+from xinshou import wx
 from .processor import Processor
 
 

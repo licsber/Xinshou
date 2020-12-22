@@ -1,15 +1,15 @@
 from flask import Flask
 from flask_apscheduler import APScheduler
 
-from db.cpdaily import CpDaily
-from db.msg_log import MsgLogger
-from views import *
-from wx.admin import Admin
+from .db.cpdaily import CpDaily
+from .db.msg_log import MsgLogger
+from .views import *
+from .wx.admin import Admin
 
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_pyfile('../config.py')
+    app.config.from_pyfile('config.py')
     app.register_blueprint(root.mod, url_prefix='/')
     app.register_blueprint(cpdaily.mod, url_prefix='/cpdaily')
     app.register_blueprint(admin.mod, url_prefix='/wechat-admin')

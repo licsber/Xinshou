@@ -1,7 +1,7 @@
 from flask import current_app
 from licsber import get_mongo
 
-import wx
+import xinshou.wx as wx
 
 
 class MsgLogger:
