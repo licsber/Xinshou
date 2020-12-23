@@ -1,28 +1,76 @@
 import json
 import uuid
 
+from licsber.utils import get_now_date
+
 from .utils import *
 
 HOST = 'njit.campusphere.net'
 
 
-def get_detail_task(session, params):
-    headers = {
-        'Accept': 'application/json, text/plain, */*',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
-        'content-type': 'application/json',
-        'Accept-Encoding': 'gzip,deflate',
-        'Accept-Language': 'zh-CN,en-US;q=0.8',
-        'Content-Type': 'application/json;charset=UTF-8'
+def sign_all(session, stu_no):
+    session.post(
+        url=f'https://{HOST}/wec-counselor-sign-apps/stu/sign/queryDailySginTasks',
+        headers=DEFAULT_HEADER, data=json.dumps({}), verify=False)
+    res = session.post(
+        url=f'https://{HOST}/wec-counselor-sign-apps/stu/sign/queryDailySginTasks',
+        headers=DEFAULT_HEADER, data=json.dumps({}), verify=False)
+    if len(res.json()['datas']['unSignedTasks']) < 1:
+        return '当前无签到任务.'
+
+    latest_task = res.json()['datas']['unSignedTasks'][0]
+    now_date = get_now_date()
+    if now_date not in latest_task['rateSignDate']:
+        return '已被签到.'
+
+    params = {
+        'signInstanceWid': latest_task['signInstanceWid'],
+        'signWid': latest_task['signWid']
     }
     res = session.post(
         url=f'https://{HOST}/wec-counselor-sign-apps/stu/sign/detailSignTaskInst',
-        headers=headers, data=json.dumps(params), verify=False)
-    data = res.json()['datas']
-    return data
+        headers=DEFAULT_HEADER, data=json.dumps(params), verify=False)
+    task = res.json()['datas']
 
+    form = {
+        'signPhotoUrl': '',
+        'signInstanceWid': task['signInstanceWid'],
+        'longitude': LON,
+        'latitude': LAT,
+        'isMalposition': task['isMalposition'],
+        'abnormalReason': '在校',
+        'position': ADDRESS
+    }
 
-def submit_form(session, form, stu_no):
+    if task['isNeedExtra'] == 1:
+        extra_fields = task['extraField']
+        defaults = [
+            {
+                'title': '上午体温报告',
+                'value': '36.1℃ - 36.5℃'
+            },
+            {
+                'title': '下午体温报告',
+                'value': '36.1℃ - 36.5℃'
+            }
+        ]
+        extra_field_item_values = []
+        for i in range(0, len(extra_fields)):
+            default = defaults[i]
+            extra_field = extra_fields[i]
+            if default['title'] != extra_field['title']:
+                continue
+            extraFieldItems = extra_field['extraFieldItems']
+            for extraFieldItem in extraFieldItems:
+                if extraFieldItem['content'] == default['value']:
+                    extraFieldItemValue = {'extraFieldItemValue': default['value'],
+                                           'extraFieldItemWid': extraFieldItem['wid']}
+                    if extraFieldItem['isOtherItems'] == 1:
+                        extraFieldItemValue = {'extraFieldItemValue': default['other'],
+                                               'extraFieldItemWid': extraFieldItem['wid']}
+                    extra_field_item_values.append(extraFieldItemValue)
+        form['extraFieldItems'] = extra_field_item_values
+
     extension = {
         "model": "China Plus Max S",
         "appVersion": "8.1.14",
@@ -44,79 +92,30 @@ def submit_form(session, form, stu_no):
     }
     res = session.post(url=f'https://{HOST}/wec-counselor-sign-apps/stu/sign/completeSignIn',
                        headers=headers, data=json.dumps(form), verify=False)
-    return res.json()['message']
-
-
-def sign_all(session, stu_no):
-    headers = {
-        'Accept': 'application/json, text/plain, */*',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
-        'content-type': 'application/json',
-        'Accept-Encoding': 'gzip,deflate',
-        'Accept-Language': 'zh-CN,en-US;q=0.8',
-        'Content-Type': 'application/json;charset=UTF-8'
-    }
-    session.post(
-        url=f'https://{HOST}/wec-counselor-sign-apps/stu/sign/queryDailySginTasks',
-        headers=headers, data=json.dumps({}), verify=False)
-    res = session.post(
-        url=f'https://{HOST}/wec-counselor-sign-apps/stu/sign/queryDailySginTasks',
-        headers=headers, data=json.dumps({}), verify=False)
-    if len(res.json()['datas']['unSignedTasks']) < 1:
-        return True
-
-    # log(res.json())
-    status = []
-    for i in range(0, len(res.json()['datas']['unSignedTasks'])):
-        latest_task = res.json()['datas']['unSignedTasks'][i]
-        params = {
-            'signInstanceWid': latest_task['signInstanceWid'],
-            'signWid': latest_task['signWid']
-        }
-        task = get_detail_task(session, params)
-        form = fill_form(task)
-        if form:
-            status.append(submit_form(session, form, stu_no))
-    return status
+    msg = res.json()['message']
+    return msg if msg == 'SUCCESS' else ''
 
 
 def sign_dorm(session, stu_no):
-    headers = {
-        'Accept': 'application/json, text/plain, */*',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
-        'content-type': 'application/json',
-        'Accept-Encoding': 'gzip,deflate',
-        'Accept-Language': 'zh-CN,en-US;q=0.8',
-        'Content-Type': 'application/json;charset=UTF-8'
-    }
     session.post(
         url=f'https://{HOST}/wec-counselor-attendance-apps/student/attendance/getStuAttendacesInOneDay',
-        headers=headers, data=json.dumps({}))
+        headers=DEFAULT_HEADER, data=json.dumps({}))
     res = session.post(
         url=f'https://{HOST}/wec-counselor-attendance-apps/student/attendance/getStuAttendacesInOneDay',
-        headers=headers, data=json.dumps({}))
+        headers=DEFAULT_HEADER, data=json.dumps({}))
     if len(res.json()['datas']['unSignedTasks']) < 1:
         log('当前没有未签到任务')
         return True
 
-    latestTask = res.json()['datas']['unSignedTasks'][0]
+    latest_task = res.json()['datas']['unSignedTasks'][0]
     task = {
-        'signInstanceWid': latestTask['signInstanceWid'],
-        'signWid': latestTask['signWid']
+        'signInstanceWid': latest_task['signInstanceWid'],
+        'signWid': latest_task['signWid']
     }
     res = session.post(url=f'https://{HOST}/wec-counselor-attendance-apps/student/attendance/detailSignInstance',
-                       headers=headers, data=json.dumps(task))
+                       headers=DEFAULT_HEADER, data=json.dumps(task))
     task = res.json()['datas']
 
-    form = {}
-    form['signInstanceWid'] = task['signInstanceWid']
-    form['longitude'] = LON
-    form['latitude'] = LAT
-    form['isMalposition'] = task['isMalposition']
-    form['abnormalReason'] = '在校'
-    form['signPhotoUrl'] = ''
-    form['position'] = ADDRESS
-    form['qrUuid'] = ''
     extension = {
         "lon": LON,
         "model": "PCRT00",
@@ -126,6 +125,16 @@ def sign_dorm(session, stu_no):
         "systemName": "android",
         "lat": LAT,
         "deviceId": str(uuid.uuid1())
+    }
+    form = {
+        'signInstanceWid': task['signInstanceWid'],
+        'longitude': LON,
+        'latitude': LAT,
+        'isMalposition': task['isMalposition'],
+        'abnormalReason': '在校',
+        'signPhotoUrl': '',
+        'position': ADDRESS,
+        'qrUuid': ''
     }
     headers = {
         'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; PCRT00 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Mobile Safari/537.36 okhttp/3.8.1',
@@ -140,8 +149,8 @@ def sign_dorm(session, stu_no):
     res = session.post(
         url=f'https://{HOST}/wec-counselor-attendance-apps/student/attendance/submitSign',
         headers=headers, data=json.dumps(form))
-    message = res.json()['message']
-    return message
+    msg = res.json()['message']
+    return msg if msg == 'SUCCESS' else ''
 
 
 def check_in(stu_no, passwd, dorm=False) -> bool:
@@ -151,6 +160,8 @@ def check_in(stu_no, passwd, dorm=False) -> bool:
             res = sign_dorm(s, stu_no)
         else:
             res = sign_all(s, stu_no)
-        log(f'{stu_no}: {res}')
-        return True
+        if res:
+            log(f'{stu_no}: {res}')
+            return True
+    log(f'{stu_no}: 签到失败.')
     return False

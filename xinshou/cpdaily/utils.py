@@ -11,6 +11,14 @@ urllib3.disable_warnings()
 ADDRESS = '江苏省南京市江宁区学海路天印湖'
 LON = '118.882366'
 LAT = '31.928000'
+DEFAULT_HEADER = {
+    'Accept': 'application/json, text/plain, */*',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
+    'content-type': 'application/json',
+    'Accept-Encoding': 'gzip,deflate',
+    'Accept-Language': 'zh-CN,en-US;q=0.8',
+    'Content-Type': 'application/json;charset=UTF-8'
+}
 
 
 def get_time_str():
@@ -55,44 +63,3 @@ def get_session(stu_no, passwd):
     session = requests.session()
     session.cookies = requests.utils.cookiejar_from_dict(cookies)
     return session
-
-
-def fill_form(task):
-    form = {}
-    if task['isPhoto'] != 1:
-        form['signPhotoUrl'] = ''
-    if task['isNeedExtra'] == 1:
-        extraFields = task['extraField']
-        defaults = [
-            {
-                'title': '上午体温报告',
-                'value': '36.1℃ - 36.5℃'
-            },
-            {
-                'title': '下午体温报告',
-                'value': '36.1℃ - 36.5℃'
-            }
-        ]
-        extra_field_item_values = []
-        for i in range(0, len(extraFields)):
-            default = defaults[i]
-            extraField = extraFields[i]
-            if default['title'] != extraField['title']:
-                return None
-            extraFieldItems = extraField['extraFieldItems']
-            for extraFieldItem in extraFieldItems:
-                if extraFieldItem['content'] == default['value']:
-                    extraFieldItemValue = {'extraFieldItemValue': default['value'],
-                                           'extraFieldItemWid': extraFieldItem['wid']}
-                    if extraFieldItem['isOtherItems'] == 1:
-                        extraFieldItemValue = {'extraFieldItemValue': default['other'],
-                                               'extraFieldItemWid': extraFieldItem['wid']}
-                    extra_field_item_values.append(extraFieldItemValue)
-        form['extraFieldItems'] = extra_field_item_values
-    form['signInstanceWid'] = task['signInstanceWid']
-    form['longitude'] = LON
-    form['latitude'] = LAT
-    form['isMalposition'] = task['isMalposition']
-    form['abnormalReason'] = '在校'
-    form['position'] = ADDRESS
-    return form
