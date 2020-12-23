@@ -18,7 +18,13 @@ def sign_all(session, stu_no):
     if len(res.json()['datas']['unSignedTasks']) < 1:
         return '当前无签到任务.'
 
-    latest_task = res.json()['datas']['unSignedTasks'][0]
+    all_task = res.json()['datas']['unSignedTasks']
+    latest_task = all_task[0]
+    for i in all_task:
+        if '体温' in i['taskName']:
+            latest_task = i
+            break
+
     now_date = get_now_date()
     if now_date not in latest_task['rateSignDate']:
         return '已被签到.'
@@ -60,15 +66,15 @@ def sign_all(session, stu_no):
             extra_field = extra_fields[i]
             if default['title'] != extra_field['title']:
                 continue
-            extraFieldItems = extra_field['extraFieldItems']
-            for extraFieldItem in extraFieldItems:
-                if extraFieldItem['content'] == default['value']:
-                    extraFieldItemValue = {'extraFieldItemValue': default['value'],
-                                           'extraFieldItemWid': extraFieldItem['wid']}
-                    if extraFieldItem['isOtherItems'] == 1:
-                        extraFieldItemValue = {'extraFieldItemValue': default['other'],
-                                               'extraFieldItemWid': extraFieldItem['wid']}
-                    extra_field_item_values.append(extraFieldItemValue)
+            extra_field_items = extra_field['extraFieldItems']
+            for extra_field_item in extra_field_items:
+                if extra_field_item['content'] == default['value']:
+                    extra_field_item_value = {'extraFieldItemValue': default['value'],
+                                              'extraFieldItemWid': extra_field_item['wid']}
+                    if extra_field_item['isOtherItems'] == 1:
+                        extra_field_item_value = {'extraFieldItemValue': default['other'],
+                                                  'extraFieldItemWid': extra_field_item['wid']}
+                    extra_field_item_values.append(extra_field_item_value)
         form['extraFieldItems'] = extra_field_item_values
 
     extension = {

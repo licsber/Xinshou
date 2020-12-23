@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_apscheduler import APScheduler
 
+from .db.auth import Auth
 from .db.cpdaily import CpDaily
 from .db.msg_log import MsgLogger
 from .views import *
@@ -23,5 +24,6 @@ def create_app():
         app.admin = Admin()
         app.msg_logger = MsgLogger()
         app.cpdaily = CpDaily()
+        app.auth = Auth()
 
     return app

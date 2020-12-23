@@ -17,7 +17,7 @@ auth = HTTPBasicAuth()
 @auth.get_password
 def get_passwd(username):
     if username == 'licsber':
-        return 'licsber'
+        return current_app.config['ADMIN_PASSWD']
 
 
 @mod.route('/')
@@ -34,6 +34,13 @@ def settings():
     msg = request.args['msg'] if 'msg' in request.args else ''
     return render_template('admin-settings.html', msg=msg,
                            input_json=current_app.config['DEFAULT_MENU'])
+
+
+@mod.route('/face-manager')
+@auth.login_required
+def face_manager():
+    all = current_app.auth.get_all()
+    return render_template('face-manager.html', all=all)
 
 
 @mod.route('/user-info', methods=['POST'])

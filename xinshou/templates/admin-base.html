@@ -27,6 +27,12 @@
         <div class="layui-side-scroll">
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="">人脸认证</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="{{ url_for('admin.face_manager') }}">用户管理</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="">今日校园</a>
                     <dl class="layui-nav-child">
                         <dd><a href="">当前状态</a></dd>
@@ -43,9 +49,9 @@
                 <blockquote class="layui-elem-quote">{{ msg | safe }}</blockquote>
                 <hr class="layui-bg-green">
             {% endif %}
-            {% block body %}
-            {% endblock body %}
         </div>
+        {% block body %}
+        {% endblock body %}
     </div>
 
     <div class="layui-footer">

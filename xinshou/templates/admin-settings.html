@@ -1,50 +1,53 @@
 {% extends 'admin-base.html' %}
 {% block body %}
-    <div class="layui-row">
-        <blockquote class="layui-elem-quote layui-quote-nm">底部菜单栏操作</blockquote>
-        <a href="{{ url_for('admin.get_all_menu') }}" class="layui-btn layui-btn-radius">
-            查看自定义菜单
-        </a>
-        <form class="layui-form layui-form-pane" action="{{ url_for('admin.set_all_menu') }}" method="post">
-            <br>
-            <div class="layui-form-item" pane>
-                <label class="layui-form-label">Json内容</label>
-                <div class="layui-input-block">
-                    <label>
-                        <input type="text" name="json" required autocomplete="off" class="layui-input"
-                               value="{{ input_json }}">
-                    </label>
-                </div>
-            </div>
-            <button class="layui-btn layui-btn-radius layui-btn-normal" lay-submit>重设自定义菜单</button>
-            <a href="{{ url_for('admin.delete_all_menu') }}" class="layui-btn layui-btn-radius layui-btn-danger">
-                取消自定义菜单
+    <div class="layui-container">
+
+        <div class="layui-row">
+            <blockquote class="layui-elem-quote layui-quote-nm">底部菜单栏操作</blockquote>
+            <a href="{{ url_for('admin.get_all_menu') }}" class="layui-btn layui-btn-radius">
+                查看自定义菜单
             </a>
-        </form>
-        <hr class="layui-bg-greens">
-
-        <blockquote class="layui-elem-quote layui-quote-nm">用户信息管理</blockquote>
-        <form class="layui-form layui-form-pane" action="{{ url_for('admin.get_user_info') }}" method="post">
-            <br>
-            <div class="layui-form-item" pane>
-                <label class="layui-form-label">OpenID</label>
-                <div class="layui-input-block">
-                    <label>
-                        <input type="text" name="input" required autocomplete="off" class="layui-input">
-                    </label>
+            <form class="layui-form layui-form-pane" action="{{ url_for('admin.set_all_menu') }}" method="post">
+                <br>
+                <div class="layui-form-item" pane>
+                    <label class="layui-form-label">Json内容</label>
+                    <div class="layui-input-block">
+                        <label>
+                            <input type="text" name="json" required autocomplete="off" class="layui-input"
+                                   value="{{ input_json }}">
+                        </label>
+                    </div>
                 </div>
-            </div>
-            <button class="layui-btn layui-btn-radius" lay-submit>查看用户信息</button>
-        </form>
-        <hr class="layui-bg-green">
+                <button class="layui-btn layui-btn-radius layui-btn-normal" lay-submit>重设自定义菜单</button>
+                <a href="{{ url_for('admin.delete_all_menu') }}" class="layui-btn layui-btn-radius layui-btn-danger">
+                    取消自定义菜单
+                </a>
+            </form>
+            <hr class="layui-bg-green">
 
-        <blockquote class="layui-elem-quote layui-quote-nm">自动回复设置</blockquote>
-        <button type="button" class="layui-btn layui-btn-radius">查看自动回复</button>
-        <button type="button" class="layui-btn layui-btn-radius layui-btn-normal">重设自动回复</button>
-        <a href="{{ url_for('admin.delete_all_menu') }}" class="layui-btn layui-btn-radius layui-btn-danger">
-            删除自动回复
-        </a>
-        <hr class="layui-bg-green">
+            <blockquote class="layui-elem-quote layui-quote-nm">用户信息管理</blockquote>
+            <form class="layui-form layui-form-pane" action="{{ url_for('admin.get_user_info') }}" method="post">
+                <br>
+                <div class="layui-form-item" pane>
+                    <label class="layui-form-label">OpenID</label>
+                    <div class="layui-input-block">
+                        <label>
+                            <input type="text" name="input" required autocomplete="off" class="layui-input">
+                        </label>
+                    </div>
+                </div>
+                <button class="layui-btn layui-btn-radius" lay-submit>查看用户信息</button>
+            </form>
+            <hr class="layui-bg-green">
+
+            <blockquote class="layui-elem-quote layui-quote-nm">自动回复设置</blockquote>
+            <button type="button" class="layui-btn layui-btn-radius">查看自动回复</button>
+            <button type="button" class="layui-btn layui-btn-radius layui-btn-normal">重设自动回复</button>
+            <a href="{{ url_for('admin.delete_all_menu') }}" class="layui-btn layui-btn-radius layui-btn-danger">
+                删除自动回复
+            </a>
+            <hr class="layui-bg-green">
+        </div>
     </div>
 {% endblock body %}
 {% block script %}

@@ -1,0 +1,21 @@
+{% extends 'admin-base.html' %}
+{% block body %}
+    <div class="layui-container" style="background-color: lightcyan">
+        <label style="font-size: 30px">人脸列表：</label>
+        <hr class="layui-bg-green">
+        <div style="display: flex; flex-wrap: wrap">
+            {% for i in all %}
+                <form action="" method="post" class="layui-form">
+                    <div style="margin: 10px; padding: 10px; background-color: lightskyblue">
+                        <img src="data:image/jpeg;base64,{{ i['b64'] }}" alt="" height="300px"
+                             style="display: block"><br>
+                        <label style="font-size: 20px">学号: {{ i['no'] if 'no' in i else '暂未获取到.' }}</label><br><br>
+                        <label style="font-size: 18px">当前状态: {{ i['auth'] if 'auth' in i else '未审核.' }}</label><br><br>
+                        <button class="layui-btn" lay-submit>通过</button>
+                        <button class="layui-btn layui-btn-primary" lay-submit>拒绝</button>
+                    </div>
+                </form>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock body %}
