@@ -9,7 +9,6 @@ class CpDailyProcessor(Processor):
         to_user = m.from_user_name
         from_user = m.to_user_name
         exist = current_app.cpdaily.check_user(m.from_user_name)
-        print(exist)
         if not exist:
             token = current_app.cpdaily.gen_token(m.from_user_name)
             content = f'<a href=\"https://wx.licsber.site/cpdaily/?token={token}\">完成认证后点我进入</a>'

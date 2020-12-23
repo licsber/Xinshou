@@ -2,9 +2,10 @@ from bson.objectid import ObjectId
 from flask import current_app
 from licsber import get_mongo
 from licsber.utils import get_now_date
+from licsber.utils import get_timestamp
 
-from xinshou.cpdaliy import check_in
-from xinshou.cpdaliy import get_session
+from xinshou.cpdaily import check_in
+from xinshou.cpdaily import get_session
 
 
 class CpDaily:
@@ -15,6 +16,9 @@ class CpDaily:
         self._work = db['cp_daily']
 
     def gen_token(self, open_id):
+        self._token.delete_many({
+            'id': open_id
+        })
         r = self._token.insert_one({
             'id': open_id
         })
@@ -31,14 +35,17 @@ class CpDaily:
             'id': open_id,
             'no': stu_no,
             'pwd': passwd,
-            'ctime': get_now_date()
+            'cdate': get_now_date(),
+            'ctime': get_timestamp(),
+            'retry': 0
         }
         self._log.insert_one(l)
 
         s = get_session(stu_no, passwd)
         if s:
             self._work.insert_one(l)
-            check_in(stu_no, passwd, dorm=True)
+            # check_in(stu_no, passwd, dorm=True)
+            check_in(stu_no, passwd, dorm=False)
         return s is not None
 
     def check_user(self, open_id):

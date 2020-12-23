@@ -5,8 +5,8 @@ from flask import current_app
 from flask import request
 from flask import send_from_directory
 
-import wx
 from xinshou.model import receive_msg
+from xinshou.wx import parse_xml
 
 mod = Blueprint('root', __name__)
 
@@ -15,7 +15,7 @@ mod = Blueprint('root', __name__)
 def post():
     if current_app.debug:
         print(request.data)
-    req = wx.receive.parse_xml(request.data)
+    req = parse_xml(request.data)
     current_app.msg_logger.log(req)
     return receive_msg(req)
 

@@ -58,7 +58,6 @@ def get_session(stu_no, passwd):
 
 
 def fill_form(task):
-    print(task)
     form = {}
     if task['isPhoto'] != 1:
         form['signPhotoUrl'] = ''

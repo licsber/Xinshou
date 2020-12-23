@@ -151,6 +151,6 @@ def check_in(stu_no, passwd, dorm=False) -> bool:
             res = sign_dorm(s, stu_no)
         else:
             res = sign_all(s, stu_no)
-        log(res)
+        log(f'{stu_no}: {res}')
         return True
     return False
