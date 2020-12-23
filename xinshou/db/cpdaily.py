@@ -4,7 +4,7 @@ from licsber import get_mongo
 from licsber.utils import get_now_date
 from licsber.utils import get_timestamp
 
-from xinshou.cpdaily import check_in
+from xinshou.cpdaily import check_now
 from xinshou.cpdaily import get_session
 
 
@@ -43,12 +43,24 @@ class CpDaily:
 
         s = get_session(stu_no, passwd)
         if s:
+            l = check_now(l)
             self._work.insert_one(l)
-            # check_in(stu_no, passwd, dorm=True)
-            check_in(stu_no, passwd, dorm=False)
         return s is not None
 
-    def check_user(self, open_id):
+    def check_user_added(self, open_id):
         return self._work.find_one(
             {'id': open_id}
         )
+
+    def get_user_status(self, open_id):
+        res = '您尚未成功认证/登录, 请认证后重试.'
+        l = self._work.find_one({
+            'id': open_id
+        })
+        if l:
+            res = '尚未发生第一次签到活动.'
+            if 'mdate' in l:
+                res = f"最近一次{l['mdate']}, 尚未发生签到."
+            if 'last' in l:
+                res = f"最近一次{l['mdate']}, 类型{l['last']}."
+        return res

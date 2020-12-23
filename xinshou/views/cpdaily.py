@@ -21,7 +21,7 @@ def submit():
     stu_no = request.form['stu_no']
     passwd = request.form['passwd']
     open_id = request.form['token']
-    exist = current_app.cpdaily.check_user(open_id)
+    exist = current_app.cpdaily.check_user_added(open_id)
     if not exist and current_app.cpdaily.add_user(stu_no, passwd, open_id):
         return '<h1>提交成功, 请直接按左上角关闭.</h1>'
     else:
