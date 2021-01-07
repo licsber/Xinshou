@@ -2,6 +2,7 @@ from flask import Blueprint
 from flask import current_app
 from flask import render_template
 from flask import request
+from flask import send_from_directory
 
 mod = Blueprint('cpdaily', __name__)
 
@@ -26,3 +27,8 @@ def submit():
         return '<h1>提交成功, 请直接按左上角关闭.</h1>'
     else:
         return '<h1>密码错误或该微信已绑定账号，如需更改请联系管理员.</h1>'
+
+
+@mod.route('/MP_verify_srd2eu1ddoQo0UHR.txt')
+def wx_verify():
+    return send_from_directory('static', filename='MP_verify_srd2eu1ddoQo0UHR.txt')

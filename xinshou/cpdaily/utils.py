@@ -1,4 +1,6 @@
 import base64
+import math
+import random
 import sys
 from datetime import datetime, timedelta, timezone
 
@@ -8,9 +10,32 @@ from pyDes import des, CBC, PAD_PKCS5
 
 urllib3.disable_warnings()
 
-ADDRESS = '江苏省南京市江宁区学海路天印湖'
-LON = '118.882366'
-LAT = '31.928000'
+
+def random_address():
+    all = [
+        '南京市江宁区学海路善鉴路北',
+        '南京市江宁区学海路天印湖',
+        '南京市江宁区弘景大道1号',
+        '江苏省南京市江宁区学海路'
+    ]
+    return all[random.randint(0, len(all) - 1)]
+
+
+def random_position(longitude=118.887844, latitude=31.928509, radius=666):
+    EARTH_RADIUS = 6378100
+    safe_length = radius / math.sqrt(2)
+
+    lon_rang = 360 / (2 * math.pi * EARTH_RADIUS * math.cos(latitude)) * safe_length
+    lat_rang = 360 / (2 * math.pi * EARTH_RADIUS) * safe_length
+
+    lon = longitude + random.choice([-1, 1]) * random.random() * lon_rang
+    lat = latitude + random.choice([-1, 1]) * random.random() * lat_rang
+
+    return str(lon), str(lat)
+
+
+ADDRESS = random_address()
+LON, LAT = random_position()
 DEFAULT_HEADER = {
     'Accept': 'application/json, text/plain, */*',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
@@ -34,7 +59,7 @@ def log(content):
 
 
 def des_encrypt(s, key='ST83=@XV'):
-    key = key
+    key = 'b3L26XNL'
     iv = b"\x01\x02\x03\x04\x05\x06\x07\x08"
     k = des(key, CBC, iv, pad=None, padmode=PAD_PKCS5)
     encrypt_str = k.encrypt(s)

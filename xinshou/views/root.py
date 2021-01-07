@@ -41,3 +41,8 @@ def root():
 @mod.route('/favicon.ico')
 def favicon():
     return send_from_directory('static', filename='favicon.ico')
+
+
+@mod.route('/MP_verify_srd2eu1ddoQo0UHR.txt')
+def wx_verify():
+    return send_from_directory('static', filename='MP_verify_srd2eu1ddoQo0UHR.txt')

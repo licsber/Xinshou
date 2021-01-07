@@ -7,13 +7,27 @@ from .utils import *
 
 HOST = 'njit.campusphere.net'
 
+OLD_URLS = {
+    'one_day': f'https://{HOST}/wec-counselor-sign-apps/stu/sign/queryDailySginTasks',
+    'detail': f'https://{HOST}/wec-counselor-sign-apps/stu/sign/detailSignTaskInst',
+    'submit': f'https://{HOST}/wec-counselor-sign-apps/stu/sign/completeSignIn'
+}
+
+NEW_URLS = {
+    'one_day': f'https://{HOST}/wec-counselor-sign-apps/stu/sign/getStuSignInfosInOneDay',
+    'detail': f'https://{HOST}/wec-counselor-sign-apps/stu/sign/detailSignInstance',
+    'submit': f'https://{HOST}/wec-counselor-sign-apps/stu/sign/submitSign'
+}
+
+URLS = NEW_URLS
+
 
 def sign_all(session, stu_no):
     session.post(
-        url=f'https://{HOST}/wec-counselor-sign-apps/stu/sign/queryDailySginTasks',
+        url=URLS['one_day'],
         headers=DEFAULT_HEADER, data=json.dumps({}), verify=False)
     res = session.post(
-        url=f'https://{HOST}/wec-counselor-sign-apps/stu/sign/queryDailySginTasks',
+        url=URLS['one_day'],
         headers=DEFAULT_HEADER, data=json.dumps({}), verify=False)
     if len(res.json()['datas']['unSignedTasks']) < 1:
         return '当前无签到任务.'
@@ -34,10 +48,9 @@ def sign_all(session, stu_no):
         'signWid': latest_task['signWid']
     }
     res = session.post(
-        url=f'https://{HOST}/wec-counselor-sign-apps/stu/sign/detailSignTaskInst',
+        url=URLS['detail'],
         headers=DEFAULT_HEADER, data=json.dumps(params), verify=False)
     task = res.json()['datas']
-
     form = {
         'signPhotoUrl': '',
         'signInstanceWid': task['signInstanceWid'],
@@ -45,7 +58,8 @@ def sign_all(session, stu_no):
         'latitude': LAT,
         'isMalposition': task['isMalposition'],
         'abnormalReason': '在校',
-        'position': ADDRESS
+        'position': ADDRESS,
+        'uaIsCpadaily': True
     }
 
     if task['isNeedExtra'] == 1:
@@ -69,12 +83,10 @@ def sign_all(session, stu_no):
             extra_field_items = extra_field['extraFieldItems']
             for extra_field_item in extra_field_items:
                 if extra_field_item['content'] == default['value']:
-                    extra_field_item_value = {'extraFieldItemValue': default['value'],
-                                              'extraFieldItemWid': extra_field_item['wid']}
-                    if extra_field_item['isOtherItems'] == 1:
-                        extra_field_item_value = {'extraFieldItemValue': default['other'],
-                                                  'extraFieldItemWid': extra_field_item['wid']}
-                    extra_field_item_values.append(extra_field_item_value)
+                    extra_field_item_values.append({
+                        'extraFieldItemValue': default['value'],
+                        'extraFieldItemWid': extra_field_item['wid']
+                    })
         form['extraFieldItems'] = extra_field_item_values
 
     extension = {
@@ -96,10 +108,13 @@ def sign_all(session, stu_no):
         'Accept-Encoding': 'gzip',
         'Connection': 'Keep-Alive'
     }
-    res = session.post(url=f'https://{HOST}/wec-counselor-sign-apps/stu/sign/completeSignIn',
+    res = session.post(url=URLS['submit'],
                        headers=headers, data=json.dumps(form), verify=False)
     msg = res.json()['message']
-    return msg if msg == 'SUCCESS' else ''
+    if msg != 'SUCCESS':
+        log(f'{stu_no}: {msg}')
+        return ''
+    return '正常签到.'
 
 
 def sign_dorm(session, stu_no):
@@ -140,7 +155,8 @@ def sign_dorm(session, stu_no):
         'abnormalReason': '在校',
         'signPhotoUrl': '',
         'position': ADDRESS,
-        'qrUuid': ''
+        'qrUuid': '',
+        'uaIsCpadaily': True
     }
     headers = {
         'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; PCRT00 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Mobile Safari/537.36 okhttp/3.8.1',
