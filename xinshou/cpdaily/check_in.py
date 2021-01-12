@@ -3,6 +3,7 @@ import uuid
 
 from licsber.utils import get_now_date
 
+from auth import get_session
 from .utils import *
 
 HOST = 'njit.campusphere.net'
@@ -72,21 +73,27 @@ def sign_all(session, stu_no):
             {
                 'title': '下午体温报告',
                 'value': '36.1℃ - 36.5℃'
-            }
+            },
+            {
+                'title': '上午体温报告',
+                'value': '36.1摄氏度～36.5摄氏度'
+            },
+            {
+                'title': '同住人员是否有发热、咳嗽、干咳和腹泻等症状',
+                'value': '无'
+            },
         ]
         extra_field_item_values = []
-        for i in range(0, len(extra_fields)):
-            default = defaults[i]
-            extra_field = extra_fields[i]
-            if default['title'] != extra_field['title']:
-                continue
-            extra_field_items = extra_field['extraFieldItems']
-            for extra_field_item in extra_field_items:
-                if extra_field_item['content'] == default['value']:
-                    extra_field_item_values.append({
-                        'extraFieldItemValue': default['value'],
-                        'extraFieldItemWid': extra_field_item['wid']
-                    })
+        for i in extra_fields:
+            for j in defaults:
+                if j['title'] != i['title']:
+                    continue
+                for k in i['extraFieldItems']:
+                    if k['content'] == j['value']:
+                        extra_field_item_values.append({
+                            'extraFieldItemValue': j['value'],
+                            'extraFieldItemWid': k['wid']
+                        })
         form['extraFieldItems'] = extra_field_item_values
 
     extension = {
@@ -112,6 +119,8 @@ def sign_all(session, stu_no):
                        headers=headers, data=json.dumps(form), verify=False)
     msg = res.json()['message']
     if msg != 'SUCCESS':
+        if msg == '任务未开始，扫码签到无效！':
+            return '任务未开始'
         log(f'{stu_no}: {msg}')
         return ''
     return '正常签到.'
@@ -176,7 +185,8 @@ def sign_dorm(session, stu_no):
 
 
 def check_in(stu_no, passwd, dorm=False) -> bool:
-    s = get_session(stu_no, passwd)
+    url = 'http://authserver.njit.edu.cn/authserver/login?service=https%3A%2F%2Fnjit.campusphere.net%2Fportal%2Flogin'
+    s = get_session(url, stu_no, passwd)
     if s:
         if dorm:
             res = sign_dorm(s, stu_no)

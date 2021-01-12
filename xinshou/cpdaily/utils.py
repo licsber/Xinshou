@@ -66,7 +66,7 @@ def des_encrypt(s, key='ST83=@XV'):
     return base64.b64encode(encrypt_str).decode()
 
 
-def get_session(stu_no, passwd):
+def old_get_session(stu_no, passwd):
     params = {
         'login_url': 'http://authserver.njit.edu.cn/authserver/login?service=https%3A%2F%2Fnjit.campusphere.net%2Fportal%2Flogin',
         'needcaptcha_url': '',
