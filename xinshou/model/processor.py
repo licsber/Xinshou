@@ -10,6 +10,8 @@ class Processor:
             res = self._process_img(m)
         elif isinstance(m, wx.receive.VoiceMsg):
             res = self._process_voice(m)
+        elif isinstance(m, wx.receive.LocationMsg):
+            res = self._process_location(m)
         elif isinstance(m, wx.receive.Event):
             res = self._process_event(m)
         return res.send()
@@ -21,6 +23,9 @@ class Processor:
         return wx.reply.Msg()
 
     def _process_voice(self, m: wx.receive.VoiceMsg) -> wx.reply.Msg:
+        return wx.reply.Msg()
+
+    def _process_location(self, m: wx.receive.LocationMsg) -> wx.reply.Msg:
         return wx.reply.Msg()
 
     def _process_event(self, m: wx.receive.Event) -> wx.reply.Msg:

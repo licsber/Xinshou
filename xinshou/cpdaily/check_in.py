@@ -1,9 +1,9 @@
 import json
 import uuid
 
+from licsber.auth import get_wisedu_session
 from licsber.utils import get_now_date
 
-from auth import get_session
 from .utils import *
 
 HOST = 'njit.campusphere.net'
@@ -23,7 +23,7 @@ NEW_URLS = {
 URLS = NEW_URLS
 
 
-def sign_all(session, stu_no):
+def sign_all(session, stu_no, loc=None):
     session.post(
         url=URLS['one_day'],
         headers=DEFAULT_HEADER, data=json.dumps({}), verify=False)
@@ -52,6 +52,15 @@ def sign_all(session, stu_no):
         url=URLS['detail'],
         headers=DEFAULT_HEADER, data=json.dumps(params), verify=False)
     task = res.json()['datas']
+
+    if loc:
+        ADDRESS = loc['label']
+        LON = loc['longitude']
+        LAT = loc['latitude']
+    else:
+        ADDRESS = random_address()
+        LON, LAT = random_position()
+
     form = {
         'signPhotoUrl': '',
         'signInstanceWid': task['signInstanceWid'],
@@ -146,6 +155,9 @@ def sign_dorm(session, stu_no):
                        headers=DEFAULT_HEADER, data=json.dumps(task))
     task = res.json()['datas']
 
+    ADDRESS = random_address()
+    LON, LAT = random_position()
+
     extension = {
         "lon": LON,
         "model": "PCRT00",
@@ -184,14 +196,14 @@ def sign_dorm(session, stu_no):
     return msg if msg == 'SUCCESS' else ''
 
 
-def check_in(stu_no, passwd, dorm=False) -> bool:
+def check_in(stu_no, passwd, dorm=False, loc=None) -> bool:
     url = 'http://authserver.njit.edu.cn/authserver/login?service=https%3A%2F%2Fnjit.campusphere.net%2Fportal%2Flogin'
-    s = get_session(url, stu_no, passwd)
+    s = get_wisedu_session(url, stu_no, passwd)
     if s:
         if dorm:
             res = sign_dorm(s, stu_no)
         else:
-            res = sign_all(s, stu_no)
+            res = sign_all(s, stu_no, loc=loc)
         if res:
             log(f'{stu_no}: {res}')
             return True

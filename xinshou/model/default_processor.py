@@ -5,7 +5,6 @@ from .processor import Processor
 
 
 class DefaultProcessor(Processor):
-
     def _process_text(self, m: wx.receive.TextMsg) -> wx.reply.Msg:
         to_user = m.from_user_name
         from_user = m.to_user_name

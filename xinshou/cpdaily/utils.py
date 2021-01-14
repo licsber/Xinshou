@@ -34,8 +34,6 @@ def random_position(longitude=118.887844, latitude=31.928509, radius=666):
     return str(lon), str(lat)
 
 
-ADDRESS = random_address()
-LON, LAT = random_position()
 DEFAULT_HEADER = {
     'Accept': 'application/json, text/plain, */*',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',

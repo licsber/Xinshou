@@ -68,6 +68,23 @@ class VoiceMsg(Msg):
         return d
 
 
+class LocationMsg(Msg):
+    def __init__(self, xml_data):
+        Msg.__init__(self, xml_data)
+        self.longitude = xml_data.find('Location_Y').text
+        self.latitude = xml_data.find('Location_X').text
+        self.scale = xml_data.find('Scale').text
+        self.label = xml_data.find('Label').text
+
+    def to_dict(self):
+        d = super().to_dict()
+        d['longitude'] = self.longitude
+        d['latitude'] = self.latitude
+        d['scale'] = self.scale
+        d['label'] = self.label
+        return d
+
+
 class Event(Msg):
     def __init__(self, xml_data):
         super(Event, self).__init__(xml_data)
@@ -99,9 +116,29 @@ class ScanWaitEvent(Event):
         return d
 
 
+class LocationEvent(Event):
+    def __init__(self, xml_data):
+        super(LocationEvent, self).__init__(xml_data)
+        self.longitude = xml_data.find('SendLocationInfo').find('Location_Y').text
+        self.latitude = xml_data.find('SendLocationInfo').find('Location_X').text
+        self.scale = xml_data.find('SendLocationInfo').find('Scale').text
+        self.label = xml_data.find('SendLocationInfo').find('Label').text
+        self.poi = xml_data.find('SendLocationInfo').find('Poiname').text
+
+    def to_dict(self):
+        d = super().to_dict()
+        d['longitude'] = self.longitude
+        d['latitude'] = self.latitude
+        d['scale'] = self.scale
+        d['label'] = self.label
+        d['poi'] = self.poi
+        return d
+
+
 event_map = {
     'CLICK': ClickEvent,
-    'scancode_waitmsg': ScanWaitEvent
+    'scancode_waitmsg': ScanWaitEvent,
+    'location_select': LocationEvent
 }
 
 
@@ -117,6 +154,7 @@ xml_map = {
     'text': TextMsg,
     'image': ImageMsg,
     'voice': VoiceMsg,
+    'location': LocationMsg,
     'event': parse_event
 }
 

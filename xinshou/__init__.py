@@ -14,7 +14,6 @@ def create_app():
     app.register_blueprint(root.mod, url_prefix='/')
     app.register_blueprint(cpdaily.mod, url_prefix='/cpdaily')
     app.register_blueprint(admin.mod, url_prefix='/wechat-admin')
-    app.register_blueprint(bind.mod, url_prefix='/bing')
 
     scheduler = APScheduler()
     scheduler.init_app(app)

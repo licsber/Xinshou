@@ -20,12 +20,12 @@ DEFAULT_MENU = '''
                     "key": "bind"
                 },
                 {
-                    "name": "扫码报名内测",
-                    "type": "scancode_waitmsg",
-                    "key": "scan"
+                    "name": "位置信息选择",
+                    "type": "location_select",
+                    "key": "location"
                 },
                 {
-                    "name": "今日校园签到",
+                    "name": "校园验证获取",
                     "type": "click",
                     "key": "cpdaily"
                 }
@@ -43,6 +43,11 @@ DEFAULT_MENU = '''
                     "name": "加入我们",
                     "type": "view",
                     "url": "https://www.yuque.com/njit"
+                },
+                {
+                    "name": "个人博客",
+                    "type": "view",
+                    "url": "https://www.cnblogs.com/licsber/"
                 },
                 {
                     "name": "联系管理",

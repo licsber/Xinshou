@@ -1,11 +1,12 @@
 from bson.objectid import ObjectId
 from flask import current_app
 from licsber import get_mongo
+from licsber.auth import get_wisedu_session
 from licsber.utils import get_now_date
 from licsber.utils import get_timestamp
 
+from xinshou import wx
 from xinshou.cpdaily import check_now
-from xinshou.cpdaily import get_session
 
 
 class CpDaily:
@@ -14,6 +15,7 @@ class CpDaily:
         self._log = db['cp_daily_log']
         self._token = db['cp_daily_token']
         self._work = db['cp_daily']
+        self._loc = db['cp_daily_location']
 
     def gen_token(self, open_id):
         self._token.delete_many({
@@ -41,7 +43,8 @@ class CpDaily:
         }
         self._log.insert_one(l)
 
-        s = get_session(stu_no, passwd)
+        url = 'http://authserver.njit.edu.cn/authserver/login?service=https%3A%2F%2Fnjit.campusphere.net%2Fportal%2Flogin'
+        s = get_wisedu_session(url, stu_no, passwd)
         if s:
             l = check_now(l)
             self._work.insert_one(l)
@@ -64,3 +67,16 @@ class CpDaily:
             if 'last' in l:
                 res = f"最近一次{l['mdate']}, 类型{l['last']}."
         return res
+
+    def remember_location(self, event: wx.receive.LocationEvent):
+        l = {
+            'id': event.from_user_name,
+            'ctime': get_timestamp(),
+            'cdate': get_now_date(),
+            'longitude': event.longitude,
+            'latitude': event.latitude,
+            'scale': event.scale,
+            'label': event.label,
+            'poi': event.poi
+        }
+        self._loc.insert_one(l)

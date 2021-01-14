@@ -7,4 +7,5 @@ xinshou/config.py
 # 以下是抽离出来的，带配置密码的，独立运行的脚本，忽略不影响项目整体运转。
 crontab_*.py
 private_*.py
-*.html
+debug.html
+test.html
