@@ -1,5 +1,6 @@
 import json
 import uuid
+from json import JSONDecodeError
 
 from licsber.auth import get_wisedu_session
 from licsber.utils import get_now_date
@@ -23,20 +24,28 @@ NEW_URLS = {
 URLS = NEW_URLS
 
 
-def sign_all(session, stu_no, loc=None):
+def sign_all(session, stu_no, loc=None, debug=False):
     session.post(
         url=URLS['one_day'],
         headers=DEFAULT_HEADER, data=json.dumps({}), verify=False)
     res = session.post(
         url=URLS['one_day'],
         headers=DEFAULT_HEADER, data=json.dumps({}), verify=False)
-    if len(res.json()['datas']['unSignedTasks']) < 1:
+    try:
+        all_task = res.json()['datas']['unSignedTasks']
+    except JSONDecodeError:
+        log(f"{stu_no}: 需要验证码")
+        return ''
+
+    if len(all_task) < 1:
         return '当前无签到任务.'
 
-    all_task = res.json()['datas']['unSignedTasks']
+    if debug:
+        print(all_task)
+
     latest_task = all_task[0]
     for i in all_task:
-        if '体温' in i['taskName']:
+        if '体温' in i['taskName'] or '健康' in i['taskName']:
             latest_task = i
             break
 
@@ -52,11 +61,16 @@ def sign_all(session, stu_no, loc=None):
         url=URLS['detail'],
         headers=DEFAULT_HEADER, data=json.dumps(params), verify=False)
     task = res.json()['datas']
+    if debug:
+        print(task)
 
     if loc:
         ADDRESS = loc['label']
-        LON = loc['longitude']
-        LAT = loc['latitude']
+        if not ADDRESS:
+            ADDRESS = loc['poi']
+            if not ADDRESS:
+                ADDRESS = random_address()
+        LON, LAT = random_position(longitude=float(loc['longitude']), latitude=float(loc['latitude']))
     else:
         ADDRESS = random_address()
         LON, LAT = random_position()
@@ -67,7 +81,7 @@ def sign_all(session, stu_no, loc=None):
         'longitude': LON,
         'latitude': LAT,
         'isMalposition': task['isMalposition'],
-        'abnormalReason': '在校',
+        'abnormalReason': '假期',
         'position': ADDRESS,
         'uaIsCpadaily': True
     }
@@ -91,6 +105,26 @@ def sign_all(session, stu_no, loc=None):
                 'title': '同住人员是否有发热、咳嗽、干咳和腹泻等症状',
                 'value': '无'
             },
+            {
+                'title': '你的当地健康码颜色是（请谨慎如实填写）（必填）',
+                'value': '绿色'
+            },
+            {
+                'title': '你或你的同住人目前是否被医学隔离（必填）',
+                'value': '否'
+            },
+            {
+                'title': '近14天你或你的同住人是否有疫情中、高风险区域行程史 （必填）',
+                'value': '否'
+            },
+            {
+                'title': '你的健康状况（必填）',
+                'value': '健康'
+            },
+            {
+                'title': '你的体温情况（必填）',
+                'value': '37.2℃及以下'
+            },
         ]
         extra_field_item_values = []
         for i in extra_fields:
@@ -106,7 +140,7 @@ def sign_all(session, stu_no, loc=None):
         form['extraFieldItems'] = extra_field_item_values
 
     extension = {
-        "model": "China Plus Max S",
+        "model": "OnePlus 20+",
         "appVersion": "8.1.14",
         "systemVersion": "8.0",
         "userId": stu_no,
@@ -196,14 +230,19 @@ def sign_dorm(session, stu_no):
     return msg if msg == 'SUCCESS' else ''
 
 
-def check_in(stu_no, passwd, dorm=False, loc=None) -> bool:
+def check_in(stu_no, passwd, dorm=False, loc=None, debug=False) -> bool:
     url = 'http://authserver.njit.edu.cn/authserver/login?service=https%3A%2F%2Fnjit.campusphere.net%2Fportal%2Flogin'
     s = get_wisedu_session(url, stu_no, passwd)
+    if 'iPlanetDirectoryPro' not in s.cookies:
+        try:
+            s = old_get_session(stu_no, passwd)
+        except Exception:
+            s = None
     if s:
         if dorm:
             res = sign_dorm(s, stu_no)
         else:
-            res = sign_all(s, stu_no, loc=loc)
+            res = sign_all(s, stu_no, loc=loc, debug=debug)
         if res:
             log(f'{stu_no}: {res}')
             return True

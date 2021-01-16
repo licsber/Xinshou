@@ -74,7 +74,7 @@ def old_get_session(stu_no, passwd):
     }
 
     cookies = {}
-    res = requests.post('http://shh.licsber.site:48090/wisedu-unified-login-api-v1.0/api/login', params, verify=False)
+    res = requests.post('http://cranny.top:8080/wisedu-unified-login-api-v1.0/api/login', params, verify=False)
     cookieStr = str(res.json()['cookies'])
     if cookieStr == 'None':
         log(res.json())
