@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 SRC="/Users/licsber/PycharmProjects/Xinshou"
-DST="shh.licsber.site:/home/licsber/xinshou"
+DST="shh:/home/licsber/xinshou"
 
 rsync -avhv $SRC/xinshou/ $DST \
   --exclude "__pycache__/*" \

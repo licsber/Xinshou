@@ -119,11 +119,12 @@ class ScanWaitEvent(Event):
 class LocationEvent(Event):
     def __init__(self, xml_data):
         super(LocationEvent, self).__init__(xml_data)
-        self.longitude = xml_data.find('SendLocationInfo').find('Location_Y').text
-        self.latitude = xml_data.find('SendLocationInfo').find('Location_X').text
-        self.scale = xml_data.find('SendLocationInfo').find('Scale').text
-        self.label = xml_data.find('SendLocationInfo').find('Label').text
-        self.poi = xml_data.find('SendLocationInfo').find('Poiname').text
+        info = xml_data.find('SendLocationInfo')
+        self.longitude = info.find('Location_Y').text
+        self.latitude = info.find('Location_X').text
+        self.scale = info.find('Scale').text
+        self.label = info.find('Label').text
+        self.poi = info.find('Poiname').text
 
     def to_dict(self):
         d = super().to_dict()
