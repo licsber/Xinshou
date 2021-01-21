@@ -1,10 +1,10 @@
 from xinshou import wx
-from xinshou.processor.cpdaily_processor import CpDailyProcessor
-from xinshou.processor.default_processor import DefaultProcessor
-from xinshou.processor.location_msg_processor import LocationMsgProcessor
-from xinshou.processor.location_processor import LocationProcessor
-from xinshou.processor.magic_processor import MagicProcessor
-from xinshou.processor.status_processor import StatusProcessor
+from xinshou.processor import CpDailyProcessor
+from xinshou.processor import DefaultProcessor
+from xinshou.processor import LocationMsgProcessor
+from xinshou.processor import LocationProcessor
+from xinshou.processor import MagicProcessor
+from xinshou.processor import StatusProcessor
 
 msg_map = {
     '我爱你': MagicProcessor(),

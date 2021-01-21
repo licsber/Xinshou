@@ -6,10 +6,9 @@ class Auth:
     def __init__(self):
         db = get_mongo(current_app.config['MONGO_PASSWD_B64'])
         self._db = db['wx_auth']
-        self.all = self._get_all()
 
     def get_all(self):
-        return self.all
+        return self._get_all()
 
     def _get_all(self):
         res = []
