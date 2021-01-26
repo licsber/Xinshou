@@ -110,6 +110,10 @@ def sign_all(session, stu_no, loc=None, debug=False):
                 'value': '绿色'
             },
             {
+                'title': '你的当地健康码颜色是（请谨慎如实填写）',
+                'value': '绿色'
+            },
+            {
                 'title': '你或你的同住人目前是否被医学隔离（必填）',
                 'value': '否'
             },
