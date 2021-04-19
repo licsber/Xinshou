@@ -83,7 +83,8 @@ def sign_all(session, stu_no, loc=None, debug=False):
         'isMalposition': task['isMalposition'],
         'abnormalReason': '假期',
         'position': ADDRESS,
-        'uaIsCpadaily': True
+        'uaIsCpadaily': True,
+        'signVersion': '1.0.0'
     }
 
     if task['isNeedExtra'] == 1:
@@ -215,7 +216,8 @@ def sign_dorm(session, stu_no):
         'signPhotoUrl': '',
         'position': ADDRESS,
         'qrUuid': '',
-        'uaIsCpadaily': True
+        'uaIsCpadaily': True,
+        'signVersion': '1.0.0'
     }
     headers = {
         'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; PCRT00 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Mobile Safari/537.36 okhttp/3.8.1',
