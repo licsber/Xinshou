@@ -15,9 +15,9 @@ DEFAULT_MENU = '''
             "name": "功能设置",
             "sub_button": [
                 {
-                    "name": "首次人脸认证",
-                    "type": "pic_sysphoto",
-                    "key": "bind"
+                    "name": "账号注册",
+                    "type": "click",
+                    "key": "register"
                 },
                 {
                     "name": "位置信息选择",

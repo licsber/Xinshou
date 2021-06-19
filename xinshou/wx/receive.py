@@ -32,9 +32,6 @@ class TextMsg(Msg):
         d['id'] = self.msg_id
         return d
 
-    def to_db(self, db):
-        pass
-
 
 class ImageMsg(Msg):
     def __init__(self, xml_data):
@@ -148,6 +145,7 @@ def parse_event(xml_data):
     res = Event
     if event in event_map:
         res = event_map[event]
+
     return res(xml_data)
 
 
@@ -163,6 +161,7 @@ xml_map = {
 def parse_xml(web_data):
     if len(web_data) == 0:
         return None
+
     xml_data = ElementTree.fromstring(web_data)
     msg_type = xml_data.find('MsgType').text
     res = Msg

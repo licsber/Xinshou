@@ -1,21 +1,18 @@
 import base64
 
-from xinshou import wx
+from wx import receive, reply
 from .processor import Processor
 
 
 class DefaultProcessor(Processor):
-    def _process_text(self, m: wx.receive.TextMsg) -> wx.reply.Msg:
-        to_user = m.from_user_name
-        from_user = m.to_user_name
+    def _process_img(self, m: receive.ImageMsg) -> reply.Msg:
+        return super()._process_img(m)
+
+    def _process_text(self, m: receive.TextMsg) -> reply.Msg:
         content = f'Base64回音壁测试, 你刚说了: ' \
                   f'"{base64.b64encode(m.content.encode()).decode()}".'
-        res = wx.reply.TextMsg(to_user, from_user, content)
-        return res
+        return reply.TextMsg.reply(m, content)
 
-    def _process_voice(self, m: wx.receive.VoiceMsg) -> wx.reply.Msg:
-        to_user = m.from_user_name
-        from_user = m.to_user_name
+    def _process_voice(self, m: receive.VoiceMsg) -> reply.Msg:
         content = f'语音解析结果: {m.recognition}.'
-        res = wx.reply.TextMsg(to_user, from_user, content)
-        return res
+        return reply.TextMsg.reply(m, content)

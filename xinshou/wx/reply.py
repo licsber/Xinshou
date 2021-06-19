@@ -22,16 +22,20 @@ class TextMsg(Msg):
             'Content': content
         })
 
+    @staticmethod
+    def reply(m, content):
+        to_user = m.from_user_name
+        from_user = m.to_user_name
+        return TextMsg(to_user, from_user, content)
+
     def send(self):
-        xml_form = """
-            <xml>
+        xml_form = '''<xml>
                 <ToUserName><![CDATA[{ToUserName}]]></ToUserName>
                 <FromUserName><![CDATA[{FromUserName}]]></FromUserName>
                 <CreateTime>{CreateTime}</CreateTime>
                 <MsgType><![CDATA[text]]></MsgType>
                 <Content><![CDATA[{Content}]]></Content>
-            </xml>
-            """
+            </xml>'''
         return xml_form.format(**self.d)
 
 
@@ -46,8 +50,7 @@ class ImageMsg(Msg):
         })
 
     def send(self):
-        xml_form = """
-            <xml>
+        xml_form = '''<xml>
                 <ToUserName><![CDATA[{ToUserName}]]></ToUserName>
                 <FromUserName><![CDATA[{FromUserName}]]></FromUserName>
                 <CreateTime>{CreateTime}</CreateTime>
@@ -55,6 +58,5 @@ class ImageMsg(Msg):
                 <Image>
                 <MediaId><![CDATA[{MediaId}]]></MediaId>
                 </Image>
-            </xml>
-            """
+            </xml>'''
         return xml_form.format(**self.d)
