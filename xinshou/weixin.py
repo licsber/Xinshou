@@ -15,7 +15,7 @@ DEFAULT_MENU = '''
             "name": "功能设置",
             "sub_button": [
                 {
-                    "name": "账号注册",
+                    "name": "校园账号绑定",
                     "type": "click",
                     "key": "register"
                 },
@@ -25,14 +25,14 @@ DEFAULT_MENU = '''
                     "key": "location"
                 },
                 {
-                    "name": "校园验证获取",
+                    "name": "领取每日Mana",
                     "type": "click",
-                    "key": "cpdaily"
+                    "key": "checkin"
                 }
             ]
         },
         {
-            "name": "状态获取",
+            "name": "信息获取",
             "type": "click",
             "key": "status"
         },
@@ -50,7 +50,7 @@ DEFAULT_MENU = '''
                     "url": "https://www.cnblogs.com/licsber/"
                 },
                 {
-                    "name": "联系管理",
+                    "name": "开源地址",
                     "type": "view",
                     "url": "https://github.com/licsber"
                 }

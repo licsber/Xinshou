@@ -1,4 +1,4 @@
-from processor.default_processor import DefaultProcessor
+from processor.default import DefaultProcessor
 from utils.mod_loader import ModLoader
 from wx import receive, reply
 

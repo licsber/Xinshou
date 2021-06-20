@@ -1,6 +1,5 @@
 .idea/
 venv/
-photo/
 
 xinshou/config.py
 
@@ -8,4 +7,3 @@ xinshou/config.py
 crontab_*.py
 private_*.py
 debug.html
-test.html

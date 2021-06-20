@@ -1,3 +1,5 @@
+import sys
+
 from flask import current_app
 from licsber import get_mongo
 from licsber.utils import get_timestamp
@@ -32,6 +34,9 @@ def refresh_access_token(url, passwd, app_id, secret):
     access_token = admin.find_one({
         'type': {'$eq': 'access_token'}
     })
+
+    if sys.platform == 'darwin':
+        return
 
     if access_token and access_token['expire'] > get_timestamp() + 3600:
         print(f"当前token仍有效, {access_token['token']}.")

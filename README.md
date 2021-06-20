@@ -7,23 +7,22 @@
 
 代码结构如下：
 
-1. cpdaily: 业务模块
-2. data: 校园大数据模块(部分未公开)
-3. db: 持久化层
-4. model: 路由模块
-5. processor: 相当于controller层
-6. static: 静态文件目录
-7. templates: 网页模板(Jinja2)
-8. views: 用于后台的视图层
-9. wx: 微信格式封装
+1. db: 持久化层 使用MongoDB.
+2. model: 路由模块.
+3. processor: 相当于controller层.
+4. static: 静态文件目录.
+5. templates: 网页模板(Jinja2).
+6. utils: 工具包.
+7. views: 用于后台的视图层.
+8. wx: 微信格式封装
 
 感谢ws和cw两位大佬的帮助。
 
 ## 使用说明
 
-配置好mongodb  
-填写config.py  
-运行shell/run.sh即可
+配置好MongoDB.  
+根据config-example.py完善config.py  
+运行shell/run.sh即可.
 
 ## 免责说明
 

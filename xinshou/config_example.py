@@ -1,5 +1,6 @@
 from xinshou.weixin import *
 
+WX_USER_NAME = '公众号id'
 WX_APP_ID = '微信id'
 WX_APP_SECRET = '微信secret'
 WX_TOKEN = '微信token'

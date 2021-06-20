@@ -18,7 +18,10 @@ def post():
 
     req = parse_xml(request.data)
     current_app.msg_logger.log(req)
-    return receive_msg(req)
+    if req.to_user_name == current_app.config['WX_USER_NAME']:
+        return receive_msg(req)
+    else:
+        return None
 
 
 def check_valid(request):
@@ -45,4 +48,4 @@ def root():
 
 @mod.route('/favicon.ico')
 def favicon():
-    return send_from_directory('static', filename='favicon.ico')
+    return send_from_directory('static', 'favicon.ico')
